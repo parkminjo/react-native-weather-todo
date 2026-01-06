@@ -124,7 +124,7 @@ const App = () => {
           <Text style={{ fontSize: 38, fontWeight: '600', color: !isWorking ? 'white' : 'gray' }}>Travel</Text>
         </TouchableOpacity>
       </View>
-      <View>
+      <View style={{ flexDirection: 'row', alignItems: 'center' }}>
         <TextInput
           value={text}
           onChangeText={handleChangeText}
@@ -133,6 +133,9 @@ const App = () => {
           placeholder={isWorking ? 'Add a Todo' : 'Where do you want to go?'}
           returnKeyType="done"
         />
+        <TouchableOpacity onPress={addTodo} style={styles.addBtn}>
+          <Text style={{ fontSize: 14, fontWeight: '500', color: 'white' }}>ADD</Text>
+        </TouchableOpacity>
       </View>
       <ScrollView>
         {Object.keys(todos).map((key) =>
@@ -191,6 +194,15 @@ const styles = StyleSheet.create({
     borderRadius: 30,
     marginVertical: 20,
     fontSize: 16,
+    flex: 8,
+  },
+  addBtn: {
+    flex: 1,
+    alignItems: 'center',
+    backgroundColor: theme.blue,
+    paddingVertical: 15,
+    borderRadius: 30,
+    marginLeft: 10,
   },
   todoItem: {
     flexDirection: 'row',
