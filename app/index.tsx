@@ -118,14 +118,10 @@ const App = () => {
     <View style={styles.container}>
       <View style={styles.header}>
         <TouchableOpacity onPress={work}>
-          <Text style={{ fontSize: 38, fontWeight: '600', color: 'white', color: isWorking ? 'white' : 'gray' }}>
-            Work
-          </Text>
+          <Text style={{ fontSize: 38, fontWeight: '600', color: isWorking ? 'white' : 'gray' }}>Work</Text>
         </TouchableOpacity>
         <TouchableOpacity onPress={travel}>
-          <Text style={{ fontSize: 38, fontWeight: '600', color: 'white', color: !isWorking ? 'white' : 'gray' }}>
-            Travel
-          </Text>
+          <Text style={{ fontSize: 38, fontWeight: '600', color: !isWorking ? 'white' : 'gray' }}>Travel</Text>
         </TouchableOpacity>
       </View>
       <View>
