@@ -1,6 +1,7 @@
 import { theme } from '@/constants/color';
 import { Todo } from '@/types/types';
-import { useState } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useEffect, useState } from 'react';
 import { ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 
 const App = () => {
@@ -12,16 +13,37 @@ const App = () => {
   const travel = () => setIsWorking(false);
 
   const handleChangeText = (payload: string) => setText(payload);
-  const addTodo = () => {
+
+  const saveTodos = async (todos: Record<string, Todo>) => {
+    await AsyncStorage.setItem('todos', JSON.stringify(todos));
+  };
+
+  const loadTodos = async () => {
+    try {
+      const response = await AsyncStorage.getItem('todos');
+      if (response === null) throw new Error('No todos found');
+
+      const data = JSON.parse(response);
+      setTodos(data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const addTodo = async () => {
     if (text === '') return;
 
     // const newTodo = Object.assign({}, todos, { [Date.now()]: { text, isWorking } });
-    const newTodo = { ...todos, [Date.now()]: { text, isWorking } };
+    const newTodos = { ...todos, [Date.now()]: { text, isWorking } };
 
-    setTodos(newTodo);
+    setTodos(newTodos);
+    await saveTodos(newTodos);
     setText('');
   };
 
+  useEffect(() => {
+    loadTodos();
+  }, [todos]);
   return (
     <View style={styles.container}>
       <View style={styles.header}>
