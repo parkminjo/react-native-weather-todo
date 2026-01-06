@@ -1,8 +1,9 @@
 import { theme } from '@/constants/color';
 import { Todo } from '@/types/types';
+import Fontisto from '@expo/vector-icons/Fontisto';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useEffect, useState } from 'react';
-import { ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { Alert, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 
 const App = () => {
   const [isWorking, setIsWorking] = useState(true);
@@ -41,9 +42,27 @@ const App = () => {
     setText('');
   };
 
+  const deleteTodo = (key: string) => {
+    Alert.alert('Delete Todo', 'Are you sure?', [
+      { text: 'Cancel' },
+      {
+        text: 'OK',
+        style: 'destructive',
+        onPress: () => {
+          const newTodos = { ...todos };
+          delete newTodos[key];
+
+          setTodos(newTodos);
+          saveTodos(newTodos);
+        },
+      },
+    ]);
+  };
+
   useEffect(() => {
     loadTodos();
   }, [todos]);
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -69,6 +88,9 @@ const App = () => {
           todos[key].isWorking === isWorking ? (
             <View key={key} style={styles.todoItem}>
               <Text style={styles.todoText}>{todos[key].text}</Text>
+              <TouchableOpacity onPress={() => deleteTodo(key)}>
+                <Fontisto name="trash" size={18} color="gray" />
+              </TouchableOpacity>
             </View>
           ) : null
         )}
@@ -96,6 +118,9 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   todoItem: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
     backgroundColor: theme.todoBg,
     marginBottom: 10,
     paddingVertical: 15,
