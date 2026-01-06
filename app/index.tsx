@@ -43,11 +43,13 @@ const App = () => {
         />
       </View>
       <ScrollView>
-        {Object.keys(todos).map((key) => (
-          <View key={key} style={styles.todoItem}>
-            <Text style={styles.todoText}>{todos[key].text}</Text>
-          </View>
-        ))}
+        {Object.keys(todos).map((key) =>
+          todos[key].isWorking === isWorking ? (
+            <View key={key} style={styles.todoItem}>
+              <Text style={styles.todoText}>{todos[key].text}</Text>
+            </View>
+          ) : null
+        )}
       </ScrollView>
     </View>
   );
