@@ -1,4 +1,5 @@
 import { theme } from '@/constants/color';
+import { TABS } from '@/constants/tab';
 import { Todo } from '@/types/types';
 import Fontisto from '@expo/vector-icons/Fontisto';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -10,10 +11,31 @@ const App = () => {
   const [todos, setTodos] = useState<Record<string, Todo>>({});
   const [text, setText] = useState('');
 
-  const work = () => setIsWorking(true);
-  const travel = () => setIsWorking(false);
+  const work = () => {
+    setIsWorking(true);
+    saveSelectedTab(TABS.WORK);
+  };
+  const travel = () => {
+    setIsWorking(false);
+    saveSelectedTab(TABS.TRAVEL);
+  };
 
   const handleChangeText = (payload: string) => setText(payload);
+
+  const saveSelectedTab = async (tab: keyof typeof TABS) => {
+    await AsyncStorage.setItem('tab', tab);
+  };
+
+  const loadTab = async () => {
+    try {
+      const response = await AsyncStorage.getItem('tab');
+      if (response === null) throw new Error('No tab found');
+
+      setIsWorking(response === TABS.WORK);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const saveTodos = async (todos: Record<string, Todo>) => {
     await AsyncStorage.setItem('todos', JSON.stringify(todos));
@@ -61,6 +83,7 @@ const App = () => {
 
   useEffect(() => {
     loadTodos();
+    loadTab();
   }, [todos]);
 
   return (
