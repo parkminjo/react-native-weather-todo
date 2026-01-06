@@ -1,10 +1,11 @@
 import { theme } from '@/constants/color';
+import { Todo } from '@/types/types';
 import { useState } from 'react';
-import { StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 
 const App = () => {
   const [isWorking, setIsWorking] = useState(true);
-  const [todos, setTodos] = useState({});
+  const [todos, setTodos] = useState<Record<string, Todo>>({});
   const [text, setText] = useState('');
 
   const work = () => setIsWorking(true);
@@ -14,7 +15,8 @@ const App = () => {
   const addTodo = () => {
     if (text === '') return;
 
-    const newTodo = Object.assign({}, todos, { [Date.now()]: { text, isWorking } });
+    // const newTodo = Object.assign({}, todos, { [Date.now()]: { text, isWorking } });
+    const newTodo = { ...todos, [Date.now()]: { text, isWorking } };
 
     setTodos(newTodo);
     setText('');
@@ -40,6 +42,13 @@ const App = () => {
           returnKeyType="done"
         />
       </View>
+      <ScrollView>
+        {Object.keys(todos).map((key) => (
+          <View key={key} style={styles.todoItem}>
+            <Text style={styles.todoText}>{todos[key].text}</Text>
+          </View>
+        ))}
+      </ScrollView>
     </View>
   );
 };
@@ -59,7 +68,15 @@ const styles = StyleSheet.create({
     paddingVertical: 15,
     paddingHorizontal: 20,
     borderRadius: 30,
-    marginTop: 10,
+    marginVertical: 20,
     fontSize: 16,
   },
+  todoItem: {
+    backgroundColor: theme.todoBg,
+    marginBottom: 10,
+    paddingVertical: 15,
+    paddingHorizontal: 20,
+    borderRadius: 10,
+  },
+  todoText: { color: 'white', fontSize: 16 },
 });
