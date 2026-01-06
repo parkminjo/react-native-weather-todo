@@ -1,8 +1,10 @@
 import { theme } from '@/constants/color';
 import { TABS } from '@/constants/tab';
 import { Todo } from '@/types/types';
+import Entypo from '@expo/vector-icons/Entypo';
 import Fontisto from '@expo/vector-icons/Fontisto';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Checkbox } from 'expo-checkbox';
 import { useEffect, useState } from 'react';
 import { Alert, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 
@@ -57,7 +59,7 @@ const App = () => {
     if (text === '') return;
 
     // const newTodo = Object.assign({}, todos, { [Date.now()]: { text, isWorking } });
-    const newTodos = { ...todos, [Date.now()]: { text, isWorking } };
+    const newTodos = { ...todos, [Date.now()]: { text, isWorking, isCompleted: false } };
 
     setTodos(newTodos);
     await saveTodos(newTodos);
@@ -79,6 +81,32 @@ const App = () => {
         },
       },
     ]);
+  };
+
+  const updateTodoText = (key: string) => {
+    Alert.prompt('Update Todo', 'Edit your todo text', [
+      { text: 'Cancel' },
+      {
+        text: 'OK',
+        style: 'destructive',
+        onPress: (newText: string | undefined) => {
+          if (!newText) return;
+
+          const newTodos = { ...todos };
+          newTodos[key].text = newText;
+          setTodos(newTodos);
+          saveTodos(newTodos);
+        },
+      },
+    ]);
+  };
+
+  const updateTodoCompletion = (key: string) => {
+    const newTodos = { ...todos };
+    newTodos[key].isCompleted = !newTodos[key].isCompleted;
+
+    setTodos(newTodos);
+    saveTodos(newTodos);
   };
 
   useEffect(() => {
@@ -110,10 +138,35 @@ const App = () => {
         {Object.keys(todos).map((key) =>
           todos[key].isWorking === isWorking ? (
             <View key={key} style={styles.todoItem}>
-              <Text style={styles.todoText}>{todos[key].text}</Text>
-              <TouchableOpacity onPress={() => deleteTodo(key)}>
-                <Fontisto name="trash" size={18} color="gray" />
-              </TouchableOpacity>
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 16 }}>
+                <Checkbox
+                  value={todos[key].isCompleted}
+                  onValueChange={() => updateTodoCompletion(key)}
+                  color={todos[key].isCompleted ? theme.blue : undefined}
+                />
+                <Text
+                  style={{
+                    ...styles.todoText,
+                    textDecorationLine: todos[key].isCompleted ? 'line-through' : 'none',
+                    color: todos[key].isCompleted ? 'gray' : 'white',
+                  }}
+                >
+                  {todos[key].text}
+                </Text>
+              </View>
+
+              <View style={styles.actionButtons}>
+                <TouchableOpacity
+                  onPress={() => {
+                    updateTodoText(key);
+                  }}
+                >
+                  <Entypo name="pencil" size={22} color="gray" />
+                </TouchableOpacity>
+                <TouchableOpacity onPress={() => deleteTodo(key)}>
+                  <Fontisto name="trash" size={18} color="gray" />
+                </TouchableOpacity>
+              </View>
             </View>
           ) : null
         )}
@@ -151,4 +204,9 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
   todoText: { color: 'white', fontSize: 16 },
+  actionButtons: {
+    flexDirection: 'row',
+    gap: 10,
+    alignItems: 'center',
+  },
 });
