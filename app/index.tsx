@@ -118,10 +118,14 @@ const App = () => {
     <View style={styles.container}>
       <View style={styles.header}>
         <TouchableOpacity onPress={work}>
-          <Text style={{ ...styles.btnText, color: isWorking ? 'white' : 'gray' }}>Work</Text>
+          <Text style={{ fontSize: 38, fontWeight: '600', color: 'white', color: isWorking ? 'white' : 'gray' }}>
+            Work
+          </Text>
         </TouchableOpacity>
         <TouchableOpacity onPress={travel}>
-          <Text style={{ ...styles.btnText, color: !isWorking ? 'white' : 'gray' }}>Travel</Text>
+          <Text style={{ fontSize: 38, fontWeight: '600', color: 'white', color: !isWorking ? 'white' : 'gray' }}>
+            Travel
+          </Text>
         </TouchableOpacity>
       </View>
       <View>
@@ -184,7 +188,6 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     marginTop: 20,
   },
-  btnText: { fontSize: 38, fontWeight: '600', color: 'white' },
   input: {
     backgroundColor: 'white',
     paddingVertical: 15,
